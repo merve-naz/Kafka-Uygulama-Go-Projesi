@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-gonic/gin"
 
@@ -17,7 +16,6 @@ const (
 type CertificateService struct {
 	inAppCache *persistence.InMemoryStore
 
-	s3sess   *session.Session
 	krCert   *kafka.Reader
 	kwCertDL *kafka.Writer
 	kwCert   *kafka.Writer
@@ -29,7 +27,6 @@ func NewCertificateService(
 	krCert *kafka.Reader,
 	kwCertDL *kafka.Writer,
 	kwCert *kafka.Writer,
-	s3sess *session.Session,
 
 ) *CertificateService {
 	return &CertificateService{
@@ -38,7 +35,6 @@ func NewCertificateService(
 		krCert:     krCert,
 		kwCertDL:   kwCertDL,
 		kwCert:     kwCert,
-		s3sess:     s3sess,
 	}
 }
 

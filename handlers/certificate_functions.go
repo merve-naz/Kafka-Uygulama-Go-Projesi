@@ -1,14 +1,10 @@
 package handlers
 
 import (
-	"bytes"
 	"errors"
 	"image"
-	"image/png"
 	"log"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/fogleman/gg"
 	"gitlab.bulutbilisimciler.com/bb/source-code/certificate-service/config"
 	"gitlab.bulutbilisimciler.com/bb/source-code/certificate-service/models"
@@ -103,36 +99,4 @@ func (mss *CertificateService) GenerateCertificate(dto models.Certificate, langu
 	dc.DrawStringWrapped(dto.RegistrationUUID, x, z, 0.5, 0.5, maxWidth, 1.5, gg.AlignCenter)
 
 	return dc.Image(), nil
-}
-
-func (mss *CertificateService) TransformCertificateImage(image image.Image, lang string) (*bytes.Buffer, error) {
-	// bufferize the image
-	buffer := new(bytes.Buffer)
-	if err := png.Encode(buffer, image); err != nil {
-		return buffer, errors.New("failed to png bufferize certificate image")
-	}
-
-	return buffer, nil
-}
-
-func (mss *CertificateService) UploadCertificateFile(dto models.Certificate, buffer *bytes.Buffer, lang string) error {
-	// set up s3 client (minio)
-	filename := dto.RegistrationUUID + "_" + lang + ".png"
-	var fileSize = int64(buffer.Len())
-	contentType := "image/png"
-
-	// upload to s3 (minio)
-	_, err := s3.New(mss.s3sess).PutObject(&s3.PutObjectInput{
-		Bucket:             aws.String(config.C.Cdn.Bucket),
-		Key:                aws.String(filename),
-		Body:               bytes.NewReader(buffer.Bytes()),
-		ContentLength:      aws.Int64(fileSize),
-		ContentType:        aws.String(contentType),
-		ContentDisposition: aws.String("attachment"),
-	})
-	if err != nil {
-		return errors.New("failed upload certificate to cdn")
-	}
-
-	return nil
 }

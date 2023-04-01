@@ -34,33 +34,21 @@ func (cs *CertificateService) InitSubcriber() {
 			languages := []string{"tr", "en", "fr"}
 			lenLang := len(languages)
 			i := 0
+
 			for i = 0; i < lenLang; i++ {
 				lang := languages[i]
 				// generate certificate
-				cert, err := cs.GenerateCertificate(dto, lang)
+				_, err = cs.GenerateCertificate(dto, lang)
 				if err != nil {
 
 					break
 				}
-				//certificate has been generated.
-
-				certBuff, err := cs.TransformCertificateImage(cert, lang)
-				if err != nil {
-
-					break
-				}
-				err = cs.UploadCertificateFile(dto, certBuff, lang)
-				if err != nil {
-
-					break
-				}
-				//upload was successful
 
 			}
 
 			// if all languages are processed success emit success event
 			if i == lenLang {
-				log.Println("Sertifika başarıyla üretilip minio'ya kaydedildi")
+				log.Println("Sertifika başarıyla üretildi: ")
 			}
 
 		}

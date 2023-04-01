@@ -12,7 +12,6 @@ import (
 	"gitlab.bulutbilisimciler.com/bb/source-code/certificate-service/config"
 	docs "gitlab.bulutbilisimciler.com/bb/source-code/certificate-service/docs"
 	"gitlab.bulutbilisimciler.com/bb/source-code/certificate-service/handlers"
-	"gitlab.bulutbilisimciler.com/bb/source-code/certificate-service/models"
 )
 
 // Path: Certificate Service
@@ -45,18 +44,6 @@ func main() {
 	port := config.C.App.Port
 	log.Printf("INIT: %s env: %s, port: %s", APP_NAME, env, port)
 
-	// create 3th party connections
-
-	// cdn connections
-	s3Config := &models.S3Config{
-		Endpoint:  config.C.Cdn.Endpoint,
-		Region:    config.C.Cdn.Region,
-		Bucket:    config.C.Cdn.Bucket,
-		AccessKey: config.C.Cdn.AccessKey,
-		SecretKey: config.C.Cdn.SecretKey,
-	}
-	s3sess := NewS3Session(s3Config)
-
 	// in app cache
 	inAppCache := NewInAppCacheStore(time.Minute)
 
@@ -84,7 +71,6 @@ func main() {
 		krCert,
 		kwCertDL,
 		kwCert,
-		s3sess,
 	)
 
 	// check env and set gin mode
