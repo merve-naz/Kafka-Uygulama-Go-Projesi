@@ -1,0 +1,203 @@
+basePath: /api-certificates
+definitions:
+  handlers.RespondJson:
+    properties:
+      intent:
+        example: bbrn:::certificateservice:::/upload
+        type: string
+      message: {}
+      status:
+        example: true
+        type: boolean
+    type: object
+  models.Certificate:
+    properties:
+      avatar:
+        type: string
+      badge_owner:
+        type: string
+      badge_title:
+        type: string
+      completed_at:
+        type: string
+      name:
+        type: string
+      registered_at:
+        type: string
+      registration_uid:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+      url_slug:
+        type: string
+    required:
+    - avatar
+    - badge_owner
+    - badge_title
+    - completed_at
+    - name
+    - registered_at
+    - registration_uid
+    - slug
+    - title
+    - url_slug
+    type: object
+  models.Dimension:
+    properties:
+      avatar:
+        type: string
+      badge_owner:
+        type: string
+      badge_title:
+        type: string
+      completed_at:
+        type: string
+      height:
+        type: integer
+      name:
+        type: string
+      registered_at:
+        type: string
+      registration_uid:
+        type: string
+      slug:
+        type: string
+      title:
+        type: string
+      url_slug:
+        type: string
+      width:
+        type: integer
+    required:
+    - avatar
+    - badge_owner
+    - badge_title
+    - completed_at
+    - name
+    - registered_at
+    - registration_uid
+    - slug
+    - title
+    - url_slug
+    type: object
+info:
+  contact: {}
+  description: 'bb.app.certificateservice: microservice for certificate.'
+  title: BB Certificate Generator Service API
+  version: 1.0.12
+paths:
+  /certificate-dimension:
+    post:
+      consumes:
+      - application/json
+      description: create certificate by pagination
+      parameters:
+      - description: certification dto
+        in: body
+        name: certificate
+        required: true
+        schema:
+          $ref: '#/definitions/models.Dimension'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: manually generate certificate success
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "400":
+          description: 'invalid pagination query: page,limit'
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "404":
+          description: certificate not found
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+      security:
+      - BearerAuth: []
+      summary: manually generate certificate dimension
+      tags:
+      - Certificate
+  /certificates:
+    post:
+      consumes:
+      - application/json
+      description: create certificate by pagination
+      parameters:
+      - description: certification dto
+        in: body
+        name: certificate
+        required: true
+        schema:
+          $ref: '#/definitions/models.Certificate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: manually generate certificate success
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "400":
+          description: 'invalid pagination query: page,limit'
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "404":
+          description: certificate not found
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+      security:
+      - BearerAuth: []
+      summary: manually generate certificate
+      tags:
+      - Certificate
+  /trigger-kafka:
+    post:
+      consumes:
+      - application/json
+      description: manually trigger kafka with payload
+      parameters:
+      - description: certification dto
+        in: body
+        name: certificate
+        required: true
+        schema:
+          $ref: '#/definitions/models.Certificate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: kafka triggered manually success
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "400":
+          description: invalid certificate info for trigger
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+        "500":
+          description: internal server error while trigger kafka
+          schema:
+            $ref: '#/definitions/handlers.RespondJson'
+      security:
+      - BearerAuth: []
+      summary: manually trigger kafka with payload
+      tags:
+      - Certificate
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,29 @@
+# gitlab-ci.yml
+
+build_push:
+  image: docker:dind
+  services: 
+    - docker:dind
+  only:
+      - master
+  stage: build
+  script:
+    # login to the GitLab registry
+    - echo "INIT Login to GitLab registry 🔑"
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    # build the Docker image for the webserver
+    - echo "PROGRESS Getting version from VERSION file 📝"
+    - export VERSION=$(cat VERSION)
+    # docker build with REGISTRY_DOMAIN and repository name etc. 
+    - echo "PROGRESS Building image name $CI_REGISTRY_IMAGE:$VERSION"
+    - docker build -t $CI_REGISTRY_IMAGE:$VERSION .
+    # push the image to the GitLab registry
+    - echo "PROGRESS Pushing image to GitLab registry 📦"
+    - docker push $CI_REGISTRY_IMAGE:$VERSION
+    # success message
+    - echo "SUCCESS Image pushed to GitLab registry 📦"
+    # cleanup
+    - echo "CLEANUP Removing image from local machine 🧹"
+    - docker rmi $CI_REGISTRY_IMAGE:$VERSION
+    # success message
+    - echo "SUCCESS Image removed from local machine 🧹"

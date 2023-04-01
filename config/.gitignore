@@ -1,0 +1,17 @@
+# .DS_Store
+.DS_Store
+
+# .env
+.env
+
+# .env.sh
+.env.sh
+
+# .env.yaml
+.env.yaml
+.env.yml
+
+# .env.local.yaml , .env.local.yml , .env.dev.yaml , .env.dev.yml , .env.test.yaml , .env.test.yml , .env.production.yaml , .env.production.yml all files
+.env.*.yaml
+.env.*.yml
+
